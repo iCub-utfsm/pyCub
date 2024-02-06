@@ -10,7 +10,7 @@ pyCub is iCub humanoid robot simulator written in Python. It uses PyBullet for s
 1. Install dependencies
    - use Docker  
       - see [Docker](#docker) section
-   - or install python3 (3.8 and higher; tested in 3.11) and `python3 -m pip install pybullet numpy scipy open3d`
+   - or install python3 (3.8 and higher; tested in 3.11) and `python3 -m pip install pybullet numpy scipy open3d gymnasium`
      - open3d 0.16.0 and higher is required 
        - you may need to upgrade pip first: `python3 -m pip install --upgrade pip`
 2. Pull this repository
