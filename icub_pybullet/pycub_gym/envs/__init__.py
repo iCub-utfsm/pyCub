@@ -1,0 +1,1 @@
+from pycub_gym.envs.pycub_env import pyCubEnv
