@@ -63,3 +63,4 @@ eyes: # Whether to show output from eye
       # True, False
   l_eye: False
   r_eye: False
+useFixedBase: True

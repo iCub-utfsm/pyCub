@@ -187,9 +187,9 @@ class pyCub(BulletClient):
         :rtype: int or list
         """
         if self.config.self_collisions:
-            robot = self.loadURDF(self.urdf_path, useFixedBase=True, flags=self.URDF_USE_SELF_COLLISION)
+            robot = self.loadURDF(self.urdf_path, useFixedBase=self.config.useFixedBase, flags=self.URDF_USE_SELF_COLLISION)
         else:
-            robot = self.loadURDF(self.urdf_path, useFixedBase=True)
+            robot = self.loadURDF(self.urdf_path, useFixedBase=self.config.useFixedBase)
 
         joints = []
         for joint in range(self.getNumJoints(robot)):
