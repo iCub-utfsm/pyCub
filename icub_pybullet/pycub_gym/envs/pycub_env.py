@@ -37,6 +37,10 @@ class pyCubEnv(gym.Env):
             if joint_name in self.joint_dict:
                 selected_joint_limits[joint_name] = self.joint_dict[joint_name]
         # DEFINICIÓN DE ESPACIOS
+        # orden of the joints: ["right_leg","left_leg","torso","right_arm","left_arm","neck"]
+        self.orden = [["r_hip_pitch","r_hip_roll","r_hip_yaw","r_knee","r_ankle_pitch","r_ankle_roll"],["l_hip_pitch","l_hip_roll","l_hip_yaw","l_knee","l_ankle_pitch","l_ankle_roll"],["torso_pitch","torso_roll","torso_yaw"],["r_shoulder_pitch","r_shoulder_roll","r_shoulder_yaw","r_elbow","r_wrist_prosup","r_wrist_pitch","r_wrist_yaw"],["l_shoulder_pitch","l_shoulder_roll","l_shoulder_yaw","l_elbow","l_wrist_prosup","l_wrist_pitch","l_wrist_yaw"],["neck_pitch","neck_roll","neck_yaw"]]
+                
+
         #límites
         leg_low = [-0.785398163397, -0.349065850399, -1.3962634016, -2.16420827247, -0.610865238198, -0.436332312999]
         torso_low = [-0.349065850399, -0.523598775598, -0.872664625997]
@@ -83,11 +87,9 @@ class pyCubEnv(gym.Env):
             ),
         }),
             "skin": spaces.Dict({
-                # Definir espacios para la piel según tus necesidades
                 # ...
             }),
             "touch": spaces.Dict({
-                # Definir espacios para el tacto según tus necesidades
                 # ...
             })
         })
@@ -99,9 +101,11 @@ class pyCubEnv(gym.Env):
         # self.client.move_position()
         positions = action
         self.move_position(self, self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
-        obs = self.get_joint_state(self, self.joints_names)
-
-        pass
+        obs = self.get_obs(self)
+        terminated = False #false for now, we want to try step() first
+        reward = 1 if terminated else 0  # binary sparse rewards
+        #info is missing
+        return obs,reward,terminated,False
 
     def reset(self):
         pass
@@ -115,3 +119,35 @@ class pyCubEnv(gym.Env):
     def seed(self, seed=None): 
         pass
 
+########################################
+    def get_obs(self):
+        observation = {
+            "joints": {
+                "right_leg":[],
+                "left_leg":[],
+                "torso":[],
+                "right_arm":[],
+                "left_arm":[],
+                "neck":[],
+            },
+            "skin": {
+
+            },
+            "touch": {
+
+            },
+            "effector_pose": np.zeros(7)
+        }
+        i = 0
+        #following the orden of the observation space defined in innit
+        for joint in observation["joints"]:
+            # Obtener el estado del joint del cliente
+            joint_state = self.client.get_joint_state(self.orden[i])
+            # Convertir la lista en un arreglo NumPy
+            joint_state_np = np.array(joint_state)
+            # Asignar el arreglo NumPy al diccionario de observación
+            observation["joints"][joint] = joint_state_np
+            i += 1
+        pos = self.client.end_effector.get_position().pos.to_numpy()
+        ori = self.client.end_effector.get_position().ori.to_numpy()
+        observation["effector_pose"] = np.concatenate([pos,ori])
