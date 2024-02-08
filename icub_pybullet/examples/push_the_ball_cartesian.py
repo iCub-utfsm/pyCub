@@ -41,7 +41,7 @@ def push_the_ball():
     Wait could be also achieved with:
     client.wait_motion_done()
     """
-
+    print(client.end_effector.get_position())
     client.logger.info("Moved the ball!")
 
 
