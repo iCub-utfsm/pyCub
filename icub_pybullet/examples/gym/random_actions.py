@@ -15,7 +15,7 @@ random_numbers_list = []
 # Generar números aleatorios para cada articulación y almacenarlos en la lista
 for joint_name in env.joints_names:
     # Obtener los límites de la articulación desde el diccionario
-    lower_limit, upper_limit = env.joints_dict.get(joint_name, (0, 0))
+    lower_limit, upper_limit = env.joint_dict.get(joint_name, (0, 0))
 
     # Generar un número aleatorio dentro de los límites
     random_number = random.uniform(lower_limit, upper_limit)
