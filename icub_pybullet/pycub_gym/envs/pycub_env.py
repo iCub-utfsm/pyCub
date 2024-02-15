@@ -100,19 +100,22 @@ class pyCubEnv(gym.Env):
     def step(self, action):
         # self.client.move_position()
         positions = action
-        self.client.move_position(self, self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
-        obs = self.get_obs(self)
+        self.client.move_position(self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
+        obs = self.get_obs()
         terminated = False #false for now, we want to try step() first
         reward = 1 if terminated else 0  # binary sparse rewards
         #info is missing
-        self.client.update_simulation(self.client,0.00025)
+        self.client.update_simulation(0.00025)
         return obs,reward,terminated,False
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
+        self.client.removeBody(self.client.robot)
+        self.client.robot, self.client.joints, self.client.links = self.client.init_robot()
+
 
     def render(self):
-        self.client.update_simulation(self.client,0.00025)
+        self.client.update_simulation(0.00025)
 
     def close(self):
         pass    
@@ -149,6 +152,6 @@ class pyCubEnv(gym.Env):
             # Asignar el arreglo NumPy al diccionario de observación
             observation["joints"][joint] = joint_state_np
             i += 1
-        pos = self.client.end_effector.get_position().pos.to_numpy()
-        ori = self.client.end_effector.get_position().ori.to_numpy()
+        pos = np.array(self.client.end_effector.get_position().pos)
+        ori = np.array(self.client.end_effector.get_position().ori)
         observation["effector_pose"] = np.concatenate([pos,ori])
