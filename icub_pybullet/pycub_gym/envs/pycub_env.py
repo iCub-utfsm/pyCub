@@ -100,18 +100,19 @@ class pyCubEnv(gym.Env):
     def step(self, action):
         # self.client.move_position()
         positions = action
-        self.move_position(self, self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
+        self.client.move_position(self, self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
         obs = self.get_obs(self)
         terminated = False #false for now, we want to try step() first
         reward = 1 if terminated else 0  # binary sparse rewards
         #info is missing
+        self.client.update_simulation(self.client,0.00025)
         return obs,reward,terminated,False
 
-    def reset(self):
-        pass
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
 
     def render(self):
-        pass
+        self.client.update_simulation(self.client,0.00025)
 
     def close(self):
         pass    

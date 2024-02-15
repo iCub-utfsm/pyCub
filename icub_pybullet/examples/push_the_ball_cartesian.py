@@ -48,9 +48,13 @@ def push_the_ball():
 if __name__ == "__main__":
     # load the robot with correct world/config
     client = pyCub(config="with_ball.yaml")
-
     push_the_ball()
-
+    # delete URDF
+    client.removeBody(client.robot)
+    # load URDF with initial positions
+    client.robot, client.joints, client.links = client.init_robot()
+    push_the_ball()
+    
     # just wait until the gui is closed
-    while client.is_alive():
-        client.update_simulation()
+    # while client.is_alive():
+    #     client.update_simulation()
