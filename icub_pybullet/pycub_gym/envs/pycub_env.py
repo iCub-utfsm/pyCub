@@ -1,7 +1,7 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-
+import time
 
 class pyCubEnv(gym.Env):
     metadata = {'render.modes': ['human']}  
@@ -95,12 +95,14 @@ class pyCubEnv(gym.Env):
         })
         print(self.observation_space)
 
+        self.last_ctrl_step = time.time()
         pass
 
     def step(self, action):
         # self.client.move_position()
         positions = action
-        self.client.move_position(self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
+        # self.client.move_position(self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
+        self._update_control(joint_pos=action, sleep_duration=1)
         obs = self.get_obs()
         terminated = False #false for now, we want to try step() first
         reward = 1 if terminated else 0  # binary sparse rewards
@@ -155,3 +157,9 @@ class pyCubEnv(gym.Env):
         pos = np.array(self.client.end_effector.get_position().pos)
         ori = np.array(self.client.end_effector.get_position().ori)
         observation["effector_pose"] = np.concatenate([pos,ori])
+
+    def _update_control(self, joint_pos, sleep_duration=0.001):
+        
+        if sleep_duration is None or time.time()-self.last_ctrl_step > sleep_duration:
+            self.client.move_position(self.joints_names, joint_pos, wait=False, velocity=1, set_col_state=True, check_collision=True)
+            self.last_ctrl_step = time.time()
