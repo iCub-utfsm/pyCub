@@ -106,13 +106,17 @@ class pyCubEnv(gym.Env):
         reward = 1 if terminated else 0  # binary sparse rewards
         #info is missing
         self.client.update_simulation(0.00025)
-        return obs,reward,terminated,False
+        done = None
+        info = None
+        return obs,reward,terminated,done,info
 
     def reset(self, seed=None, options=None):
-        super().reset(seed=seed)
         self.client.removeBody(self.client.robot)
         self.client.robot, self.client.joints, self.client.links = self.client.init_robot()
-
+        super().reset(seed=seed)
+        obs = self.get_obs()
+        info = None
+        return obs, info
 
     def render(self):
         self.client.update_simulation(0.00025)
@@ -155,3 +159,4 @@ class pyCubEnv(gym.Env):
         pos = np.array(self.client.end_effector.get_position().pos)
         ori = np.array(self.client.end_effector.get_position().ori)
         observation["effector_pose"] = np.concatenate([pos,ori])
+        return observation
