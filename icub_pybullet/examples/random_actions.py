@@ -7,12 +7,12 @@ from pycub_gym.envs import pyCubEnv
 import random
 
 # load the robot with correct world/config
-client = pyCub(config="with_ball.yaml")
+client = pyCub(config="freebase.yaml")
 
 env = pyCubEnv(client)
 
 # Definir el número máximo de pasos antes de realizar un reset
-max_steps = 300
+max_steps = 1000
 steps_counter = 0
 
 # Bucle para ejecutar acciones aleatorias y renderizar
@@ -40,7 +40,8 @@ while True:
         random_numbers_list.append(random_number)        
 
     # Ejecutar un paso en el entorno con la acción aleatoria
-    observation, reward, _, _ = env.step(random_numbers_list)
+    observation, reward, _, _,_ = env.step(random_numbers_list)
+    print(observation)
     
     # Renderizar el entorno
     env.render()
