@@ -473,9 +473,31 @@ class pyCub(BulletClient):
         states = []
         for joint in joints:
             robot_joint_id, joint_id = self.find_joint_id(joint)
+            # return just the position of the joint
             states.append(self.getJointState(self.robot, robot_joint_id)[self.jointStates["POSITION"]])
-
         return states
+
+    def get_joint_velocity(self, joints=None):
+        """
+        Get the state of the specified joints
+
+        :param joints: joint or list of joints to get the state of
+        :type joints: int or list, optional, default=None
+        :return: list of velocities of the joints
+        :rtype: list
+        """
+        if joints is None:
+            joints = [joint.name for joint in self.joints]
+        elif not isinstance(joints, list):
+            joints = [joints]
+
+        states = []
+        for joint in joints:
+            robot_joint_id, joint_id = self.find_joint_id(joint)
+            # return just the position of the joint
+            states.append(self.getJointState(self.robot, robot_joint_id)[self.jointStates["VELOCITY"]])
+        return states
+
 
     def motion_done(self, joints=None, check_collision=True):
         """

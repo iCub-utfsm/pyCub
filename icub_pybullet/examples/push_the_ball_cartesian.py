@@ -53,6 +53,10 @@ if __name__ == "__main__":
     client.removeBody(client.robot)
     # load URDF with initial positions
     client.robot, client.joints, client.links = client.init_robot()
+    print(len(client.get_camera_images()[0])) #number of rows
+    print(len(client.get_camera_images()[0][1])) #number of pixels in a row
+    print(len(client.get_camera_images()[0][1][0])) #a pixel (rgb)
+
     push_the_ball()
     
     # just wait until the gui is closed

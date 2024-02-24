@@ -12,7 +12,7 @@ client = pyCub(config="freebase.yaml")
 env = pyCubEnv(client)
 
 # Definir el número máximo de pasos antes de realizar un reset
-max_steps = 1000
+max_steps = 10
 steps_counter = 0
 
 # Bucle para ejecutar acciones aleatorias y renderizar

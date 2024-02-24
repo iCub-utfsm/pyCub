@@ -100,9 +100,14 @@ class pyCubEnv(gym.Env):
 
     def step(self, action):
         # self.client.move_position()
+        sleep_duration=1
+        start_time = time.time()
+        # the step runs with the frecuency declared in "sleep_duration"
+        while time.time() - start_time <  sleep_duration:
+            self.client.update_simulation(0.00025)
         positions = action
         # self.client.move_position(self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
-        self._update_control(joint_pos=action, sleep_duration=1)
+        self.client.move_position(self.joints_names, positions, wait=False, velocity=1, set_col_state=True, check_collision=True)
         obs = self.get_obs()
         terminated = False #false for now, we want to try step() first
         reward = 1 if terminated else 0  # binary sparse rewards
@@ -140,11 +145,17 @@ class pyCubEnv(gym.Env):
                 "left_arm":[],
                 "neck":[],
             },
-            "skin": {
-
+            "joints_velocity": {
+                "right_leg":[],
+                "left_leg":[],
+                "torso":[],
+                "right_arm":[],
+                "left_arm":[],
+                "neck":[],
             },
-            "touch": {
-
+            "eyes": {
+                "left_eye":[],
+                "right_eye":[]
             },
             "effector_pose": np.zeros(7)
         }
@@ -153,13 +164,20 @@ class pyCubEnv(gym.Env):
         for joint in observation["joints"]:
             # Obtener el estado del joint del cliente
             joint_state = self.client.get_joint_state(self.orden[i])
+            #joint_velocity = self.client.get_joint_velocity(self.orden[i])
             # Convertir la lista en un arreglo NumPy
             joint_state_np = np.array(joint_state)
+            #joint_velocity_np = np.array(joint_velocity)
             # Asignar el arreglo NumPy al diccionario de observación
             observation["joints"][joint] = joint_state_np
+            #observation["joints_velocity"][joint_velocity] = joint_velocity_np
             i += 1
+
         pos = np.array(self.client.end_effector.get_position().pos)
         ori = np.array(self.client.end_effector.get_position().ori)
+        #falta hacer que las ventanas de los ojos se muestren siempre, si no, salta error
+        #observation["eyes"]["left_eye"] = self.client.get_camera_images()[0]
+        #observation["eyes"]["right_eye"] = self.client.get_camera_images()[1]
         observation["effector_pose"] = np.concatenate([pos,ori])
         return observation
     
