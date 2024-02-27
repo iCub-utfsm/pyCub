@@ -8,6 +8,10 @@ import random
 
 # load the robot with correct world/config
 client = pyCub(config="freebase.yaml")
+# open eye's windows
+client.visualizer.EyeWindow("l_eye", client.visualizer)
+client.visualizer.EyeWindow("r_eye", client.visualizer)
+
 
 env = pyCubEnv(client)
 
@@ -16,7 +20,7 @@ max_steps = 10
 steps_counter = 0
 
 # Bucle para ejecutar acciones aleatorias y renderizar
-while True:
+while client.is_alive():
     # Incrementar el contador de pasos
     steps_counter += 1
     
@@ -41,7 +45,8 @@ while True:
 
     # Ejecutar un paso en el entorno con la acción aleatoria
     observation, reward, _, _,_ = env.step(random_numbers_list)
-    print(observation)
+    print("####################################################################################################")
+    print(observation["eyes"])
     
     # Renderizar el entorno
     env.render()

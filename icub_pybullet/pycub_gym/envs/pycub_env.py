@@ -176,8 +176,8 @@ class pyCubEnv(gym.Env):
         pos = np.array(self.client.end_effector.get_position().pos)
         ori = np.array(self.client.end_effector.get_position().ori)
         #falta hacer que las ventanas de los ojos se muestren siempre, si no, salta error
-        #observation["eyes"]["left_eye"] = self.client.get_camera_images()[0]
-        #observation["eyes"]["right_eye"] = self.client.get_camera_images()[1]
+        observation["eyes"]["left_eye"] = self.client.get_camera_images()[0]
+        observation["eyes"]["right_eye"] = self.client.get_camera_images()[1]
         observation["effector_pose"] = np.concatenate([pos,ori])
         return observation
     

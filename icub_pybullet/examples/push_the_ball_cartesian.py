@@ -48,17 +48,21 @@ def push_the_ball():
 if __name__ == "__main__":
     # load the robot with correct world/config
     client = pyCub(config="with_ball.yaml")
+    client.visualizer.EyeWindow("l_eye", client.visualizer)
+    client.visualizer.EyeWindow("r_eye", client.visualizer)
+   
     push_the_ball()
     # delete URDF
     client.removeBody(client.robot)
     # load URDF with initial positions
     client.robot, client.joints, client.links = client.init_robot()
-    print(len(client.get_camera_images()[0])) #number of rows
+
+    print(len(client.get_camera_images()[0])) #number of rows of the image
     print(len(client.get_camera_images()[0][1])) #number of pixels in a row
     print(len(client.get_camera_images()[0][1][0])) #a pixel (rgb)
 
     push_the_ball()
     
     # just wait until the gui is closed
-    # while client.is_alive():
-    #     client.update_simulation()
+    while client.is_alive():
+        client.update_simulation()

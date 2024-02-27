@@ -64,11 +64,11 @@ class Visualizer:
         self.file_menu.add_item("Stream r_eye to file", menu_counter + 3)
         self.file_menu.set_enabled(menu_counter + 3, False)
 
-        show_callbacks = []
+        self.show_callbacks = []
         for menu_id in range(menu_counter + 4):
             c = self.MenuCallback(menu_id, self)
             if menu_id in [6, 7]:
-                show_callbacks.append(c)
+                self.show_callbacks.append(c)
             self.window.set_on_menu_item_activated(menu_id, c)
 
         self.window.add_child(self.scene)
@@ -104,9 +104,9 @@ class Visualizer:
             self.show_mesh()
         self.is_alive = True
         if self.client.config.eyes.l_eye:
-            show_callbacks[0]()
+            self.show_callbacks[0]()
         if self.client.config.eyes.r_eye:
-            show_callbacks[1]()
+            self.show_callbacks[1]()
 
     def show_first(self, urdf_name="robot"):
         """
