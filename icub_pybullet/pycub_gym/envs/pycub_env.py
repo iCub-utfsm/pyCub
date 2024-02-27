@@ -86,12 +86,15 @@ class pyCubEnv(gym.Env):
             dtype=np.double
             ),
         }),
-            "skin": spaces.Dict({
-                # ...
-            }),
-            "touch": spaces.Dict({
-                # ...
-            })
+        "joints_velocity": spaces.Dict({
+        # to do: complete joints velocity obs space
+        }),
+        "eyes": spaces.Dict({
+            "left_eye": spaces.Box(low=0, high=255, shape=(240, 320, 3), dtype=np.uint8),
+            "right_eye": spaces.Box(low=0, high=255, shape=(240, 320, 3), dtype=np.uint8)
+        }),
+        # to do: complete effector_pose obs space
+        "effector_pose": spaces.Box()
         })
         print(self.observation_space)
 
@@ -135,6 +138,7 @@ class pyCubEnv(gym.Env):
         pass
 
 ########################################
+    
     def get_obs(self):
         observation = {
             "joints": {
@@ -175,7 +179,6 @@ class pyCubEnv(gym.Env):
 
         pos = np.array(self.client.end_effector.get_position().pos)
         ori = np.array(self.client.end_effector.get_position().ori)
-        #falta hacer que las ventanas de los ojos se muestren siempre, si no, salta error
         observation["eyes"]["left_eye"] = self.client.get_camera_images()[0]
         observation["eyes"]["right_eye"] = self.client.get_camera_images()[1]
         observation["effector_pose"] = np.concatenate([pos,ori])

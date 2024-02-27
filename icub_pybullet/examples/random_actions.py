@@ -45,8 +45,7 @@ while client.is_alive():
 
     # Ejecutar un paso en el entorno con la acción aleatoria
     observation, reward, _, _,_ = env.step(random_numbers_list)
-    print("####################################################################################################")
-    print(observation["eyes"])
+    print(observation)
     
     # Renderizar el entorno
     env.render()
